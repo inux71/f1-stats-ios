@@ -9,9 +9,20 @@ import SwiftUI
 
 @main
 struct F1_StatsApp: App {
+    @StateObject private var coordinator = AppCoordinator()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack(path: $coordinator.path) {
+                MainView() // root view
+                    .navigationDestination(for: AppDestination.self) { destination in
+                        switch destination {
+                        case .settings:
+                            Text("XD")
+                        }
+                    }
+            }
+            .environmentObject(coordinator)
         }
     }
 }
