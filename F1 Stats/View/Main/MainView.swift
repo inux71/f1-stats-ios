@@ -19,7 +19,7 @@ struct MainView: View {
                 systemImage: "list.number",
                 value: .standings
             ) {
-                Text("Standings")
+                StandingsView()
             }
             
             Tab(
@@ -30,6 +30,7 @@ struct MainView: View {
                 Text("Races")
             }
         }
+        .navigationTitle(viewModel.selectedTab.rawValue)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(

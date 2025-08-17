@@ -12,6 +12,6 @@ enum MainViewTab: String, Hashable {
     case races = "Races"
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(self.rawValue)
+        hasher.combine(rawValue)
     }
 }
