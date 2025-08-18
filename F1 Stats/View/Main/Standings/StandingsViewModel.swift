@@ -13,7 +13,7 @@ class StandingsViewModel: ObservableObject {
     @Published var selectedChampionship: Championship = .drivers
     
     @Published private(set) var isLoading: Bool = false
-    @Published private(set) var errorMessage: String? = nil
+    @Published var errorMessage: String? = nil
     @Published private(set) var driversChampionship: [DriverChampionship] = []
     @Published private(set) var constructorsChampionship: [ConstructorChampionship] = []
     

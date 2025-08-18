@@ -8,18 +8,14 @@
 import Foundation
 import SwiftUI
 
-class AppCoordinator: ObservableObject, Navigable {
-    typealias Destination = AppDestination
+class AppCoordinator: ObservableObject, FullScreenCoverable {
+    typealias Item = AppFullScreenCoverableItem
     
-    @Published var path = NavigationPath()
+    @Published var item: AppFullScreenCoverableItem?
+    private(set) var onDismiss: (() -> Void)?
     
-    func navigate(to destination: AppDestination) {
-        self.path.append(destination)
-    }
-    
-    func navigateBack() {
-        guard !self.path.isEmpty else { return }
-        
-        self.path.removeLast()
+    func show(item: AppFullScreenCoverableItem, onDismiss: (() -> Void)? = nil) {
+        self.item = item
+        self.onDismiss = onDismiss
     }
 }

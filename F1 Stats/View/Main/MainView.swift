@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject private var coordinator: AppCoordinator
-    
+    @StateObject private var coordinator = AppCoordinator()
     @StateObject private var viewModel = MainViewModel()
     
     var body: some View {
@@ -30,15 +29,14 @@ struct MainView: View {
                 Text("Races")
             }
         }
-        .navigationTitle(viewModel.selectedTab.rawValue)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(
-                    "Settings",
-                    systemImage: "gear"
-                ) {
-                    coordinator.navigate(to: .settings)
-                }
+        .environmentObject(coordinator)
+        .fullScreenCover(
+            item: $coordinator.item,
+            onDismiss: coordinator.onDismiss
+        ) { item in
+            switch item {
+            case .settings:
+                Text("Settings")
             }
         }
     }

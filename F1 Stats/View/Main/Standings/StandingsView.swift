@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct StandingsView: View {
+    @EnvironmentObject private var appCoordinator: AppCoordinator
+    
     @StateObject private var coordinator = StandingsCoordinator()
     @StateObject private var viewModel = StandingsViewModel()
     
@@ -50,6 +52,17 @@ struct StandingsView: View {
                     }
                 }
             }
+            .navigationTitle("Standings")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(
+                        "Settings",
+                        systemImage: "gear"
+                    ) {
+                        appCoordinator.show(item: .settings)
+                    }
+                }
+            }
         }
         .environmentObject(coordinator)
         .onAppear {
@@ -76,15 +89,6 @@ struct StandingsView: View {
                 }
             }
         }
-        .overlay(alignment: .bottom) {
-            if let errorMessage = viewModel.errorMessage {
-                Label(
-                    errorMessage,
-                    systemImage: "xmark.circle"
-                )
-                .padding(16)
-            }
-        }
         .overlay {
             if viewModel.isLoading {
                 ProgressView()
@@ -93,6 +97,11 @@ struct StandingsView: View {
         .refreshable {
             viewModel.fetchChampionship(for: viewModel.selectedChampionship)
         }
+        .toast(
+            message: $viewModel.errorMessage,
+            systemImage: "xmark.circle",
+            role: .error
+        )
     }
 }
 
@@ -100,4 +109,5 @@ struct StandingsView: View {
     NavigationStack {
         StandingsView()
     }
+    .environmentObject(AppCoordinator())
 }
