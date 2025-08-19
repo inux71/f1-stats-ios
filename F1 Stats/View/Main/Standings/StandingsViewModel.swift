@@ -8,14 +8,36 @@
 import Foundation
 
 class StandingsViewModel: ObservableObject {
-    private let standingsService = StandingsService()
+    private let networkManager: NetworkManager = NetworkManager.shared
     
+    private var driversChampionship: [DriverChampionship] = []
+    private var constructorsChampionship: [ConstructorChampionship] = []
+    
+    @Published var searchText: String = ""
     @Published var selectedChampionship: Championship = .drivers
     
     @Published private(set) var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published private(set) var driversChampionship: [DriverChampionship] = []
-    @Published private(set) var constructorsChampionship: [ConstructorChampionship] = []
+    
+    var filteredDrivers: [DriverChampionship] {
+        guard !searchText.isEmpty else {
+            return driversChampionship
+        }
+        
+        return driversChampionship.filter {
+            $0.driver.name.lowercased().contains(searchText.lowercased())
+        }
+    }
+    
+    var filteredConstructors: [ConstructorChampionship] {
+        guard !searchText.isEmpty else {
+            return constructorsChampionship
+        }
+        
+        return constructorsChampionship.filter {
+            $0.team.teamName.lowercased().contains(searchText.lowercased())
+        }
+    }
     
     @MainActor
     func fetchChampionship(for championship: Championship) {
@@ -30,10 +52,10 @@ class StandingsViewModel: ObservableObject {
             do {
                 switch championship {
                 case .drivers:
-                    let standings: DriverStanding = try await standingsService.getStandings(for: .drivers)
+                    let standings: DriverStanding = try await networkManager.get(from: .standingsDrivers)
                     driversChampionship = standings.driversChampionship
                 case .constructors:
-                    let standings: ConstructorStanding = try await standingsService.getStandings(for: .constructors)
+                    let standings: ConstructorStanding = try await networkManager.get(from: .standingsConstructors)
                     constructorsChampionship = standings.constructorsChampionship
                 }
             } catch {

@@ -26,7 +26,7 @@ struct MainView: View {
                 systemImage: "flag.pattern.checkered.2.crossed",
                 value: .races,
             ) {
-                Text("Races")
+                RacesView()
             }
         }
         .environmentObject(coordinator)
@@ -36,7 +36,8 @@ struct MainView: View {
         ) { item in
             switch item {
             case .settings:
-                Text("Settings")
+                SettingsView()
+                    .environmentObject(coordinator)
             }
         }
     }

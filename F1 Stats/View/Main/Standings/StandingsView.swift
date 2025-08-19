@@ -32,27 +32,42 @@ struct StandingsView: View {
                 Section {
                     switch viewModel.selectedChampionship {
                     case .drivers:
-                        ForEach(viewModel.driversChampionship) { driverStanding in
-                            StandingCard(
-                                position: driverStanding.position,
+                        ForEach(viewModel.filteredDrivers) { driverStanding in
+                            Card(
+                                leadingText: "#\(driverStanding.position)",
                                 title: "\(driverStanding.driver.name) \(driverStanding.driver.surname)",
                                 subtitle: driverStanding.team.teamName,
-                                points: driverStanding.points
+                                trailingText: "\(driverStanding.points)"
                             )
+                            .onTapGesture {
+                                coordinator.navigate(to: .driver(id: driverStanding.driverId))
+                            }
                         }
                     case .constructors:
-                        ForEach(viewModel.constructorsChampionship) { constructorStanding in
-                            StandingCard(
-                                position: constructorStanding.position,
+                        ForEach(viewModel.filteredConstructors) { constructorStanding in
+                            Card(
+                                leadingText: "#\(constructorStanding.position)",
                                 title: constructorStanding.team.teamName,
                                 subtitle: constructorStanding.team.country,
-                                points: constructorStanding.points
+                                trailingText: "\(constructorStanding.points)"
                             )
+                            .onTapGesture {
+                                coordinator.navigate(to: .team(id: constructorStanding.teamId))
+                            }
                         }
                     }
                 }
             }
             .navigationTitle("Standings")
+            .navigationDestination(for: StandingsDestination.self) { destination in
+                switch destination {
+                case .driver(id: let id):
+                    DriverDetailsView(id: id)
+                case .team(id: let id):
+                    TeamDetailsView(id: id)
+                }
+            }
+            .searchable(text: $viewModel.searchText)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(
@@ -74,14 +89,14 @@ struct StandingsView: View {
         .overlay {
             switch viewModel.selectedChampionship {
             case .drivers:
-                if viewModel.driversChampionship.isEmpty {
+                if viewModel.filteredDrivers.isEmpty {
                     ContentUnavailableView(
                         "No drivers found",
                         systemImage: "steeringwheel"
                     )
                 }
             case .constructors:
-                if viewModel.constructorsChampionship.isEmpty {
+                if viewModel.filteredConstructors.isEmpty {
                     ContentUnavailableView(
                         "No constructors found",
                         systemImage: "door.garage.closed"
