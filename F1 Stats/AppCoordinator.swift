@@ -18,4 +18,8 @@ class AppCoordinator: ObservableObject, FullScreenCoverable {
         self.item = item
         self.onDismiss = onDismiss
     }
+    
+    func dismiss() {
+        self.item = nil
+    }
 }

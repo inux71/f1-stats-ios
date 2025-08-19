@@ -14,4 +14,5 @@ protocol FullScreenCoverable {
     var onDismiss: (() -> Void)? { get }
     
     func show(item: Item, onDismiss: (() -> Void)?)
+    func dismiss()
 }
